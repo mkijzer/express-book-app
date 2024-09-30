@@ -18,7 +18,7 @@
 
 import { PrismaClient } from "@prisma/client";
 
-const getBooks = (genre, available) => {
+const getBooks = async (genre, available) => {
   const prisma = new PrismaClient();
 
   return prisma.book.findMany({

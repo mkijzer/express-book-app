@@ -11,16 +11,31 @@ import advancedAuth from "../middleware/auth.js"; // Keep using advancedAuth
 const router = express.Router();
 
 // No auth needed for GET
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const { genre, available } = req.query;
-    const books = getBooks(genre, available);
+    const books = await getBooks(genre, available);
     res.status(200).json(books);
   } catch (error) {
     console.error(error);
     res.status(500).send("Something went wrong while getting list of books!");
   }
 });
+
+router.get(
+  "/:id",
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const book = await getBookById(id);
+
+      res.status(200).json(book);
+    } catch (error) {
+      next(error);
+    }
+  }
+  // notFoundErrorHandler
+);
 
 // Protected route (POST) using advancedAuth
 router.post("/", advancedAuth, (req, res) => {
