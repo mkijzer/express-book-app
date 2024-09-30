@@ -1,23 +1,8 @@
-import jwt from "jsonwebtoken";
+import { auth } from "express-oauth2-jwt-bearer";
 
-const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization;
-  const secretKey = process.env.AUTH_SECRET_KEY || "my-secret-key";
+const advancedAuth = auth({
+  audience: "https://book-store-api",
+  issuerBaseURL: `https://dev-dmi4xrevd2edct4e.eu.auth0.com/`,
+});
 
-  if (!token) {
-    return res
-      .status(401)
-      .json({ message: "You cannot access this operation without a token!" });
-  }
-
-  jwt.verify(token, secretKey, (err, decoded) => {
-    if (err) {
-      return res.status(403).json({ message: "Invalid token provided!" });
-    }
-
-    req.user = decoded;
-    next();
-  });
-};
-
-export default authMiddleware;
+export default advancedAuth;
